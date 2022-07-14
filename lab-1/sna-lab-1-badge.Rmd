@@ -1,7 +1,7 @@
 ---
 title: 'Intro to SNA Badge'
 subtitle: "LASER Institute SNA Learning Lab 1"
-author: "Dr. Shaun Kellogg"
+author: "Katie McCarthy"
 date: "`r format(Sys.Date(),'%B %e, %Y')`"
 output: html_document
 ---
@@ -26,41 +26,41 @@ Use the institutional library (e.g. [NCSU Library](https://www.lib.ncsu.edu/#art
 
 1.  Provide an APA citation for your selected study.
 
-    -   
+    -   Ma, S., West, M., Herman, G. L., Tomkin, J., & Mestre, J. (2016, October). Studying faculty communities of practice through social network analysis. In *2016 IEEE Frontiers in Education Conference (FIE)* (pp. 1-5). IEEE.
 
 2.  Who are the network's actors and how are they represented visually?
 
-    -   
+    -   Network actors are the teachers involved in two UIUC-based community of practice networks.
 
 3.  What ties connect these actors and how are they represented visually?
 
-    -   
+    -   Reports on a sociometric survey that captured links between faculty in the degree to which they interacted about teaching from no interaction through active collaboration.
 
 4.  Why were these relations of interest to the researcher?
 
-    -   
+    -   They hypothesized that having stronger social network would lead to more sustained changes in the way that the faculty taught.
 
 5.  Finally, what makes this collection of actors a social network?
 
-    -   
+    -   They are all at the same institution working in specific communities of practice.
 
 Draft a research question for a population you may be interested in studying, or that would be of interest to educational researchers, and that would require the collection of relational data and answer the following questions:
 
 1.  What relational data would need to be collected?
 
-    -   
+    -   It would be interesting to examine how graduate students in my department connect with each other and with faculty with attention to who the main faculty actors are and what connections or types of connections might be related to metrics like sense of belonging and more distal measures like degree completion. To add complexity, it would be interesting to explore a bimodal network analysis to see what resources (library, workshops, counseling services) that students were accessing.
 
 2.  For what reason would relational data need to be collected in order to address this question?
 
-    -   
+    -   Understanding how students use resources and form relationships within a larger community requires relational data.
 
 3.  Explain the analytical level at which these data would need to be collected and analyzed.
 
-    -   
+    -   I would analyze the program as as the level of analysis with actors and edges within the program.
 
 4.  How does this differ from the ways in which individual or group behavior is typically conceptualized and modeled in conventional educational research?
 
-    -   
+    -   Allows for examination of structure and particular relations (e.g., centrality) within a larger system.
 
 ### Part II: Data Product
 
@@ -70,9 +70,33 @@ Using one of the data sets provided in your data folder, **your goal for this la
 
 I highly recommend creating a new R script in your lab-1 folder to complete this task. When your code is ready to share, use the code chunk below to share the final code for your model and answer the questions that follow.
 
-```{r, my-data-product}
-# YOUR FINAL CODE HERE
+```{r, my-data-product, warning=F, message=F, echo=F}
+library(readxl)
+library(tidygraph)
+library(ggraph)
 
+student_nodes <- read_excel("data/student-attributes.xlsx") #nodes
+student_nodes$achievement <- factor(student_nodes$achievement, levels = c("low", "average", "high"))
+student_edges <- read_excel("data/student-edgelist.xlsx") #edges
+
+#create a "network object" or "table graph" in tidygraph lingo
+
+student_network <- tbl_graph(edges = student_edges,
+                             nodes = student_nodes,
+                             directed = TRUE) # tells  model the edges are directional (e.g., it matters that 1 -> 7, but 7 does not go to 1)
+
+
+ggraph(student_network, layout = "fr") + 
+  geom_edge_link(arrow = arrow(length = unit(1, 'mm')), 
+                 end_cap = circle(3, 'mm'),
+                 start_cap = circle(3, 'mm'),
+                 alpha = .1) +
+    geom_node_point(aes(size = local_size(),
+                      color = achievement,
+                      shape = gender)) +
+  geom_node_text(aes(label = id),
+                 repel=TRUE) +
+  theme_graph()
 
 ```
 
