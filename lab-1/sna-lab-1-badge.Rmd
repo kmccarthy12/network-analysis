@@ -88,8 +88,8 @@ student_network <- tbl_graph(edges = student_edges,
 
 ggraph(student_network, layout = "fr") + 
   geom_edge_link(arrow = arrow(length = unit(1, 'mm')), 
-                 end_cap = circle(3, 'mm'),
-                 start_cap = circle(3, 'mm'),
+                 end_cap = circle(4, 'mm'),
+                 start_cap = circle(4, 'mm'),
                  alpha = .1) +
     geom_node_point(aes(size = local_size(),
                       color = achievement,
